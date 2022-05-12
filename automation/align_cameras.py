@@ -54,7 +54,7 @@ doc = Metashape.Document()
 
 # prevents opening without writing permissions and saves project
 doc.read_only = False
-doc.save(output_path + '/project.psx')
+doc.save(output_path + os.path.sep+'project.psx')
 doc.read_only = False
       
 # adds chunk to project
