@@ -36,46 +36,51 @@ output_path = input_path + os.path.sep + "output"
 
 
 # checks whether path already exists and warns if it does
-if os.path.exists(output_path):
+
+
+def func_align_cameras():
+    # specifies file extensions that are allowed as input
+    images = find_files(input_path, [".jpg", ".jpeg", ".tif", ".tiff"])
+
+    # creates a new document in Metashape
+    doc = Metashape.Document()
+
+    # prevents opening without writing permissions and saves project
+    doc.read_only = False
+    doc.save(output_path + os.path.sep + 'project.psx')
+    doc.read_only = False
+
+    # adds chunk to project
+    chunk = doc.addChunk()
+
+    # imports cameras into chunk and saves project
+    chunk.addPhotos(images)
+    doc.save()
+
+    # prints the amount of loaded images in console
+    print(str(len(chunk.cameras)) + " images loaded")
+
+    # help_reference_preselection = 'reference_preselection =' + reference_preselection_bool
+
+    # finds key features in importet cameras
+    chunk.matchPhotos(keypoint_limit = 40000, tiepoint_limit = 10000, generic_preselection = True, reference_preselection = True)
+    doc.save()
+
+    # aligns cameras 
+    chunk.alignCameras()
+    doc.save()
+
+    # chunk.buildDepthMaps(filter_mode = Metashape.MildFiltering)
+    # doc.save()
+
+
+if os.path.exists(output_path + os.path.sep + 'project.psx'):
     msg_box = tkinter.messagebox.askokcancel(title="Warning", message="The dataset you specified has already been processed. If you proceed, previous files will be deleted.")
     if  msg_box == 0:
-        print("closing")
-        sys.exit()
+        print("Please select a different set of images.")
+        # sys.exit()
     else:
-        pass
+        func_align_cameras()
 
 else:
-    pass
-# specifies file extensions that are allowed as input
-images = find_files(input_path, [".jpg", ".jpeg", ".tif", ".tiff"])
-
-# creates a new document in Metashape
-doc = Metashape.Document()
-
-# prevents opening without writing permissions and saves project
-doc.read_only = False
-doc.save(output_path + os.path.sep+'project.psx')
-doc.read_only = False
-      
-# adds chunk to project
-chunk = doc.addChunk()
-
-# imports cameras into chunk and saves project
-chunk.addPhotos(images)
-doc.save()
-
-# prints the amount of loaded images in console
-print(str(len(chunk.cameras)) + " images loaded")
-
-# help_reference_preselection = 'reference_preselection =' + reference_preselection_bool
-
-# finds key features in importet cameras
-chunk.matchPhotos(keypoint_limit = 40000, tiepoint_limit = 10000, generic_preselection = True, reference_preselection = True)
-doc.save()
-
-# aligns cameras 
-chunk.alignCameras()
-doc.save()
-
-chunk.buildDepthMaps(filter_mode = Metashape.MildFiltering)
-doc.save()
+    func_align_cameras()
