@@ -1,86 +1,43 @@
-from logging import warning
-from pickle import FALSE, TRUE
-import tkinter
+import os
 import Metashape
-import os, sys, time
-import tkinter as tk
-from tkinter import filedialog
-#from parameters import *
 
 
 def find_files(folder, types):
+    """
+    Generates a list of files of a specific file type in a folder
+    :param folder: Folder from which
+    :param types: Desired filetypes
+    :return: Returns list of specified filetypes in specified folder
+    """
     return [entry.path for entry in os.scandir(folder) if (entry.is_file() and os.path.splitext(entry.name)[1].lower() in types)]
 
 
-root = tkinter.Tk()
-
-# closes window that opens in background
-root.withdraw()
-# opens dialog window to specify input and output folder
-print("Please select input folder containing images.")
-input_path = filedialog.askdirectory()
-root.title('Select input folder')
-
-
-# creates an output folder within input folder
-output_path = input_path + os.path.sep + "output"
-
-# root = tk.Tk()
-# # closes window that opens in background
-# root.withdraw()
-# print("Please select output folder.")
-# output_path = filedialog.askopenfilenames()
-# root.title('Select output folder')
-
-#print(parameters.keypoint_limit, parameters.tiepoint_limit, parameters.generic_preselection, parameters.reference_preselection_bool)
-
-
-# checks whether path already exists and warns if it does
-
-
-def func_align_cameras():
-    # specifies file extensions that are allowed as input
+def align_cameras_depth_maps(input_path, output_path):
+    """
+    Creates a new Chunk in a new Metashape document and aligns imported cameras.
+    :param input_path: Folder from which images will be imported
+    :param output_path: folder where project files and exported files will be stored
+    """
     images = find_files(input_path, [".jpg", ".jpeg", ".tif", ".tiff"])
 
-    # creates a new document in Metashape
     doc = Metashape.Document()
 
-    # prevents opening without writing permissions and saves project
     doc.read_only = False
-    doc.save(output_path + os.path.sep + 'project.psx')
+    doc.save(f"{output_path}{os.path.sep}project.psx")
     doc.read_only = False
 
-    # adds chunk to project
     chunk = doc.addChunk()
 
-    # imports cameras into chunk and saves project
     chunk.addPhotos(images)
     doc.save()
 
-    # prints the amount of loaded images in console
     print(str(len(chunk.cameras)) + " images loaded")
 
-    # help_reference_preselection = 'reference_preselection =' + reference_preselection_bool
-
-    # finds key features in importet cameras
-    chunk.matchPhotos(keypoint_limit = 40000, tiepoint_limit = 10000, generic_preselection = True, reference_preselection = True)
+    chunk.matchPhotos(keypoint_limit=40000, tiepoint_limit=10000, generic_preselection=True, reference_preselection=True)
     doc.save()
 
-    # aligns cameras 
-    chunk.alignCameras()
+    chunk.alignCameras(min_image=2, adaptive_fitting=False, reset_alignment=False, subdivide_task=True)
     doc.save()
 
-    # chunk.buildDepthMaps(filter_mode = Metashape.MildFiltering)
-    # doc.save()
-
-
-if os.path.exists(output_path + os.path.sep + 'project.psx'):
-    msg_box = tkinter.messagebox.askokcancel(title="Warning", message="The dataset you specified has already been processed. If you proceed, previous files will be deleted.")
-    if  msg_box == 0:
-        print("Please select a different set of images.")
-        # sys.exit()
-    else:
-        func_align_cameras()
-
-else:
-    func_align_cameras()
+    chunk.buildDepthMaps(downscale=4, filter_mode=Metashape.MildFiltering, reuse_depth=False, max_neighbors=16, subdivide_task=True, workitem_size_cameras=20, max_workgroup_size=100)
+    doc.save()
