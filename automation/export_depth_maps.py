@@ -2,7 +2,7 @@ import os
 import Metashape
 
 
-def export_depth_maps(output_path):
+def export_depth_maps(input_path, output_path):
     """
     Exports depth maps from the project specified in the output path
     :param output_path: Specifies the path of the project.psx file
@@ -15,6 +15,17 @@ def export_depth_maps(output_path):
     doc.read_only = False
     doc.save()
     doc.read_only = False
+
+    if not chunk.model:
+
+        chunk.buildModel(surface_type=Metashape.Arbitrary,
+                         interpolation=Metashape.EnabledInterpolation,
+                         face_count=Metashape.CustomFaceCount,
+                         face_count_custom=60000000,
+                         source_data=Metashape.DepthMapsData,
+                         vertex_colors=False,
+                         keep_depth=True)
+        doc.save()
 
     if chunk.transform.scale is None:
         scale = 1

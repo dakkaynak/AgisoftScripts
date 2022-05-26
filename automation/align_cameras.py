@@ -1,5 +1,9 @@
 import os
 import Metashape
+import json
+
+
+
 
 
 def find_files(folder, types):
@@ -18,6 +22,9 @@ def align_cameras_depth_maps(input_path, output_path):
     :param input_path: Folder from which images will be imported
     :param output_path: folder where project files and exported files will be stored
     """
+
+    parameters = json.load(open(f"{input_path}{os.path.sep}parameters.json", "r"))
+
     images = find_files(input_path, [".jpg", ".jpeg", ".tif", ".tiff"])
 
     doc = Metashape.Document()
@@ -33,11 +40,23 @@ def align_cameras_depth_maps(input_path, output_path):
 
     print(str(len(chunk.cameras)) + " images loaded")
 
-    chunk.matchPhotos(keypoint_limit=40000, tiepoint_limit=10000, generic_preselection=True, reference_preselection=True)
+    chunk.matchPhotos(keypoint_limit=parameters["match_keypoint_limit"],
+                      tiepoint_limit=parameters["match_tiepoint_limit"],
+                      generic_preselection=parameters["match_generic_preselection"],
+                      reference_preselection=parameters["match_reference_preselection"])
     doc.save()
 
-    chunk.alignCameras(min_image=2, adaptive_fitting=False, reset_alignment=False, subdivide_task=True)
+    chunk.alignCameras(min_image=parameters["align_min_image"],
+                       adaptive_fitting=parameters["align_adaptive_fitting"],
+                       reset_alignment=parameters["align_reset_alignment"],
+                       subdivide_task=parameters["align_subdivide_task"])
     doc.save()
 
-    chunk.buildDepthMaps(downscale=4, filter_mode=Metashape.MildFiltering, reuse_depth=False, max_neighbors=16, subdivide_task=True, workitem_size_cameras=20, max_workgroup_size=100)
+    chunk.buildDepthMaps(downscale=parameters["align_downscale"],
+                         filter_mode=Metashape.MildFiltering,
+                         reuse_depth=parameters["align_reuse_depth"],
+                         max_neighbors=parameters["align_max_neighbors"],
+                         subdivide_task=parameters["align_subdivide_task"],
+                         workitem_size_cameras=parameters["align_workitem_size_cameras"],
+                         max_workgroup_size=parameters["align_max_workgroup_size"])
     doc.save()

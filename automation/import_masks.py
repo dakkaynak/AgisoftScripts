@@ -22,6 +22,13 @@ def import_masks(output_path):
         os.mkdir(f"{output_path}{os.path.sep}masks")
 
     for camera in chunk.cameras:
-        chunk.generateMasks(path=f"{output_path}{os.path.sep}masks{os.path.sep}{camera.label}.png", masking_mode=Metashape.MaskingModeAlpha, mask_operation=Metashape.MaskOperationReplacement, tolerance=10, mask_defocus=False, fix_coverage=True, blur_threshold=3, depth_threshold=3.40282e+38)
+        chunk.generateMasks(path=f"{output_path}{os.path.sep}masks{os.path.sep}{camera.label}.png",
+                            masking_mode=Metashape.MaskingModeAlpha,
+                            mask_operation=Metashape.MaskOperationReplacement,
+                            tolerance=10,
+                            mask_defocus=False,
+                            fix_coverage=True,
+                            blur_threshold=3,
+                            depth_threshold=3.40282e+38)
 
     doc.save()
