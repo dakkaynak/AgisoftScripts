@@ -23,38 +23,40 @@ def export_model(input_path, output_path):
         chunk.buildModel(surface_type=Metashape.Arbitrary,
                          interpolation=Metashape.EnabledInterpolation,
                          face_count=Metashape.CustomFaceCount,
-                         face_count_custom=60000000,
+                         face_count_custom=parameters["model_face_count_custom"],
                          source_data=Metashape.DepthMapsData,
-                         vertex_colors=False, keep_depth=True)
+                         vertex_colors=parameters["model_vertex_colors"],
+                         keep_depth=parameters["keep_depth"])
 
         chunk.buildUV(mapping_mode=Metashape.GenericMapping,
-                      page_count=1,
-                      texture_size=8192)
+                      page_count=parameters["UV_page_count"],
+                      texture_size=parameters["UV_texture_size"])
 
         chunk.buildTexture(blending_mode=Metashape.MosaicBlending,
-                           texture_size=8192,
-                           fill_holes=True,
-                           ghosting_filter=True,
-                           transfer_texture=True)
+                           texture_size=parameters["texture_size"],
+                           fill_holes=parameters["texture_fill_holes"],
+                           ghosting_filter=parameters["texture_ghosting_filter"],
+                           transfer_texture=parameters["texture_transfer_texture"])
 
         chunk.exportModel(path=f"{output_path}{os.path.sep}model.obj",
-                          binary=True,
-                          precision=6,
+                          binary=parameters["exp_model_binary"],
+                          precision=parameters["exp_model_precision"],
                           texture_format=Metashape.ImageFormatJPEG,
-                          save_texture=True,
-                          save_uv=True,
-                          save_normals=True,
-                          save_colors=True,
-                          save_confidence=False,
-                          save_cameras=True,
-                          save_markers=True,
-                          save_udim=False,
-                          save_alpha=False,
-                          embed_texture=False,
-                          strip_extensions=False,
+                          save_texture=parameters["exp_model_save_texture"],
+                          save_uv=parameters["exp_model_save_uv"],
+                          save_normals=parameters["exp_model_save_normals"],
+                          save_colors=parameters["exp_model_save_colors"],
+                          save_confidence=parameters["exp_model_save_confidence"],
+                          save_cameras=parameters["exp_model_save_cameras"],
+                          save_markers=parameters["exp_model_save_markers"],
+                          save_udim=parameters["exp_model_save_udim"],
+                          save_alpha=parameters["exp_model_save_alpha"],
+                          embed_texture=parameters["exp_model_embed_texture"],
+                          strip_extensions=parameters["exp_model_strip_extensions"],
                           raster_transform=Metashape.RasterTransformNone,
-                          colors_rgb_8bit=True, comment='',
-                          save_comment=True,
+                          colors_rgb_8bit=parameters["exp_model_colors_rgb_8bit"],
+                          comment=parameters["exp_model_colors_rgb_8bit"],
+                          save_comment=parameters["exp_comment"],
                           format=Metashape.ModelFormatNone,
-                          clip_to_boundary=True)
+                          clip_to_boundary=parameters["exp_model_clip_to_boundary"])
         doc.save()

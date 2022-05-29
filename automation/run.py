@@ -8,7 +8,9 @@ from align_cameras import align_cameras_depth_maps
 from export_dense_cloud import export_dense_cloud
 from export_depth_maps import export_depth_maps
 from export_model import export_model
+from export_normal_maps import export_normal_maps
 from export_report import export_report
+
 from import_masks import import_masks
 
 root = tk.Tk()
@@ -25,6 +27,7 @@ def processing(input_path, output_path):
     export_dense_cloud(input_path, output_path)
     export_model(input_path, output_path)
     export_depth_maps(input_path, output_path)
+    export_normal_maps(input_path, output_path)
     export_report(input_path, output_path)
 
 # Opens dialog window to specify input and output folder
