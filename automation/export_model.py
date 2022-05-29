@@ -20,6 +20,30 @@ def export_model(input_path, output_path):
         doc.save()
         doc.read_only = False
 
+        if parameters["filtering_reprojection_error"]:
+            chunk = Metashape.app.document.chunk
+            f = Metashape.PointCloud.Filter()
+            f.init(chunk, criterion=Metashape.PointCloud.Filter.ReprojectionError)
+            f.selectPoints(parameters["filter_threshold_reprojection_error"])
+
+        if parameters["filtering_reconstruction_uncertainty"]:
+            chunk = Metashape.app.document.chunk
+            f = Metashape.PointCloud.Filter()
+            f.init(chunk, criterion=Metashape.PointCloud.Filter.ReconstructionUncertainty)
+            f.selectPoints(parameters["filter_threshold_reconstruction_uncertainty"])
+
+        if parameters["filtering_image_count"]:
+            chunk = Metashape.app.document.chunk
+            f = Metashape.PointCloud.Filter()
+            f.init(chunk, criterion=Metashape.PointCloud.Filter.ImageCount)
+            f.selectPoints(parameters["filter_threshold_image_count"])
+
+        if parameters["filtering_reprojection_error"]:
+            chunk = Metashape.app.document.chunk
+            f = Metashape.PointCloud.Filter()
+            f.init(chunk, criterion=Metashape.PointCloud.Filter.ProjectionAccuracy)
+            f.selectPoints(parameters["filter_threshold_projection_accuracy"])
+
         chunk.buildModel(surface_type=Metashape.Arbitrary,
                          interpolation=Metashape.EnabledInterpolation,
                          face_count=Metashape.CustomFaceCount,

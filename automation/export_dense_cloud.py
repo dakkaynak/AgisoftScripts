@@ -20,6 +20,24 @@ def export_dense_cloud(input_path, output_path):
         doc.save()
         doc.read_only = False
 
+        f = Metashape.PointCloud.Filter()
+
+        if parameters["filtering_reprojection_error"]:
+            f.init(chunk, criterion=Metashape.PointCloud.Filter.ReprojectionError)
+            f.selectPoints(parameters["filter_threshold_reprojection_error"])
+
+        if parameters["filtering_reconstruction_uncertainty"]:
+            f.init(chunk, criterion=Metashape.PointCloud.Filter.ReconstructionUncertainty)
+            f.selectPoints(parameters["filter_threshold_reconstruction_uncertainty"])
+
+        if parameters["filtering_image_count"]:
+            f.init(chunk, criterion=Metashape.PointCloud.Filter.ImageCount)
+            f.selectPoints(parameters["filter_threshold_image_count"])
+
+        if parameters["filtering_reprojection_error"]:
+            f.init(chunk, criterion=Metashape.PointCloud.Filter.ProjectionAccuracy)
+            f.selectPoints(parameters["filter_threshold_projection_accuracy"])
+
         chunk.buildDenseCloud(point_colors=True,
                               point_confidence=parameters["dense_point_confidence"],
                               keep_depth=parameters["dense_keep_depth"],

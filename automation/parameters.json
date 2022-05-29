@@ -16,6 +16,15 @@
 "align_workitem_size_cameras" : 20,
 "align_max_workgroup_size" : 100,
 
+"filtering_reprojection_error" : true,
+"filter_threshold_reprojection_error" : 0.2,
+"filtering_reconstruction_uncertainty" : true,
+"filter_threshold_reconstruction_uncertainty" : 45,
+"filtering_image_count" : true,
+"filter_threshold_image_count" :  3,
+"filtering_reprojection_error" : true,
+"filter_threshold_projection_accuracy" : 5,
+
 "export_dense_cloud" : true,
 "dense_point_colors" : true,
 "dense_point_confidence" : false,

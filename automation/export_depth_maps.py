@@ -52,4 +52,3 @@ def export_depth_maps(input_path, output_path):
                 print(f"Depth map for {camera.label} exported successfully!")
 
         doc.save()
-
