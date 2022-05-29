@@ -17,11 +17,11 @@
 "align_max_workgroup_size" : 100,
 
 "filtering_reprojection_error" : true,
-"filter_threshold_reprojection_error" : 0.2,
+"filter_threshold_reprojection_error" : 0.6,
 "filtering_reconstruction_uncertainty" : true,
-"filter_threshold_reconstruction_uncertainty" : 45,
+"filter_threshold_reconstruction_uncertainty" : 20,
 "filtering_image_count" : true,
-"filter_threshold_image_count" :  3,
+"filter_threshold_image_count" :  7,
 "filtering_reprojection_error" : true,
 "filter_threshold_projection_accuracy" : 5,
 
