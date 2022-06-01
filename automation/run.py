@@ -30,12 +30,12 @@ def processing(input_path, output_path):
     export_normal_maps(input_path, output_path)
     export_report(input_path, output_path)
 
+
 # Opens dialog window to specify input and output folder
 print("Please select input folder containing images.")
 input_path = filedialog.askdirectory()
 root.title('Select input folder')
 output_path = f"{input_path}{os.path.sep}output"
-
 
 
 # Checks whether set of images has already been processed
@@ -50,5 +50,3 @@ if os.path.exists(f"{output_path}{os.path.sep}project.psx"):
 
 elif not os.path.exists(f"{output_path}{os.path.sep}project.psx"):
     processing(input_path, output_path)
-
-

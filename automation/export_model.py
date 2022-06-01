@@ -38,25 +38,26 @@ def export_model(input_path, output_path):
             f.init(chunk, criterion=Metashape.PointCloud.Filter.ImageCount)
             f.removePoints(parameters["filter_threshold_image_count"])
 
-        if parameters["filtering_reprojection_error"]:
+        if parameters["filtering_reprojection_accuracy"]:
             chunk = Metashape.app.document.chunk
             f = Metashape.PointCloud.Filter()
             f.init(chunk, criterion=Metashape.PointCloud.Filter.ProjectionAccuracy)
             f.removePoints(parameters["filter_threshold_projection_accuracy"])
 
-        chunk.buildModel(surface_type=Metashape.Arbitrary,
-                         interpolation=Metashape.EnabledInterpolation,
-                         face_count=Metashape.CustomFaceCount,
+        chunk.buildModel(surface_type=getattr(Metashape, parameters["model_surface_type"]),
+                         interpolation=getattr(Metashape, parameters["model_interpolation"]),
+                         face_count=getattr(Metashape, parameters["model_face_count"]),
                          face_count_custom=parameters["model_face_count_custom"],
-                         source_data=Metashape.DepthMapsData,
+                         source_data=getattr(Metashape, parameters["model_source_data"]),
                          vertex_colors=parameters["model_vertex_colors"],
                          keep_depth=parameters["keep_depth"])
+        doc.save()
 
-        chunk.buildUV(mapping_mode=Metashape.GenericMapping,
+        chunk.buildUV(mapping_mode=getattr(Metashape, parameters["UV_mapping_mode"]),
                       page_count=parameters["UV_page_count"],
                       texture_size=parameters["UV_texture_size"])
 
-        chunk.buildTexture(blending_mode=Metashape.MosaicBlending,
+        chunk.buildTexture(blending_mode=getattr(Metashape, parameters["texture_blending_mode"]),
                            texture_size=parameters["texture_size"],
                            fill_holes=parameters["texture_fill_holes"],
                            ghosting_filter=parameters["texture_ghosting_filter"],
@@ -65,7 +66,7 @@ def export_model(input_path, output_path):
         chunk.exportModel(path=f"{output_path}{os.path.sep}model.obj",
                           binary=parameters["exp_model_binary"],
                           precision=parameters["exp_model_precision"],
-                          texture_format=Metashape.ImageFormatJPEG,
+                          texture_format=getattr(Metashape, parameters["exp_model_texture_format"]),
                           save_texture=parameters["exp_model_save_texture"],
                           save_uv=parameters["exp_model_save_uv"],
                           save_normals=parameters["exp_model_save_normals"],
@@ -77,10 +78,10 @@ def export_model(input_path, output_path):
                           save_alpha=parameters["exp_model_save_alpha"],
                           embed_texture=parameters["exp_model_embed_texture"],
                           strip_extensions=parameters["exp_model_strip_extensions"],
-                          raster_transform=Metashape.RasterTransformNone,
+                          raster_transform=getattr(Metashape, parameters["exp_model_raster_transform"]),
                           colors_rgb_8bit=parameters["exp_model_colors_rgb_8bit"],
                           comment=parameters["exp_model_colors_rgb_8bit"],
                           save_comment=parameters["exp_comment"],
-                          format=Metashape.ModelFormatNone,
+                          format=getattr(Metashape, parameters["exp_model_format"]),
                           clip_to_boundary=parameters["exp_model_clip_to_boundary"])
         doc.save()

@@ -34,7 +34,7 @@ def export_dense_cloud(input_path, output_path):
             f.init(chunk, criterion=Metashape.PointCloud.Filter.ImageCount)
             f.removePoints(parameters["filter_threshold_image_count"])
 
-        if parameters["filtering_reprojection_error"]:
+        if parameters["filtering_reprojection_accuracy"]:
             f.init(chunk, criterion=Metashape.PointCloud.Filter.ProjectionAccuracy)
             f.removePoints(parameters["filter_threshold_projection_accuracy"])
 
@@ -52,18 +52,18 @@ def export_dense_cloud(input_path, output_path):
         doc.save()
 
         chunk.exportPoints(path=f"{output_path}{os.path.sep}dense_cloud.las",
-                           source_data=Metashape.DenseCloudData,
+                           source_data=getattr(Metashape, parameters["exp_dense_source_data"]),
                            binary=parameters["exp_dense_binary"],
                            save_normals=parameters["exp_dense_save_normals"],
                            save_colors=parameters["exp_dense_save_colors"],
                            save_classes=parameters["exp_dense_save_classes"],
                            save_confidence=parameters["exp_dense_save_confidence"],
-                           raster_transform=Metashape.RasterTransformNone,
+                           raster_transform=getattr(Metashape, parameters["exp_dense_raster_transform"]),
                            colors_rgb_8bit=parameters["exp_dense_colors_rgb_8bit"],
                            comment=parameters["exp_dense_comment"],
                            save_comment=parameters["exp_dense_save_comment"],
-                           format=Metashape.PointsFormatNone,
-                           image_format=Metashape.ImageFormatJPEG,
+                           format=getattr(Metashape, parameters["exp_dense_format"]),
+                           image_format=getattr(Metashape, parameters["exp_dense_image_format"]),
                            clip_to_boundary=parameters["exp_dense_clip_to_boundary"],
                            block_width=parameters["exp_dense_block_width"],
                            block_height=parameters["exp_dense_block_height"],

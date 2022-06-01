@@ -1,6 +1,7 @@
 import os
 import Metashape
 import json
+import ast
 
 
 def export_normal_maps(input_path, output_path):
@@ -20,16 +21,14 @@ def export_normal_maps(input_path, output_path):
         doc.read_only = False
 
         if not chunk.model:
-
-            chunk.buildModel(surface_type=Metashape.Arbitrary,
-                             interpolation=Metashape.EnabledInterpolation,
-                             face_count=Metashape.CustomFaceCount,
+            chunk.buildModel(surface_type=getattr(Metashape, parameters["model_surface_type"]),
+                             interpolation=getattr(Metashape, parameters["model_interpolation"]),
+                             face_count=getattr(Metashape, parameters["model_face_count"]),
                              face_count_custom=parameters["model_face_count_custom"],
-                             source_data=Metashape.DepthMapsData,
+                             source_data=getattr(Metashape, parameters["model_source_data"]),
                              vertex_colors=parameters["model_vertex_colors"],
                              keep_depth=parameters["keep_depth"])
             doc.save()
-
         if chunk.transform.scale is None:
             scale = 1
             print("Scale set to 1")

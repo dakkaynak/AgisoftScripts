@@ -3,9 +3,6 @@ import Metashape
 import json
 
 
-
-
-
 def find_files(folder, types):
     """
     Generates a list of files of a specific file type in a folder
@@ -53,7 +50,7 @@ def align_cameras_depth_maps(input_path, output_path):
     doc.save()
 
     chunk.buildDepthMaps(downscale=parameters["align_downscale"],
-                         filter_mode=Metashape.MildFiltering,
+                         filter_mode=getattr(Metashape, parameters["align_filter_mode"]),
                          reuse_depth=parameters["align_reuse_depth"],
                          max_neighbors=parameters["align_max_neighbors"],
                          subdivide_task=parameters["align_subdivide_task"],
