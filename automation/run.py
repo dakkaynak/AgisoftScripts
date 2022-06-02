@@ -22,8 +22,8 @@ def find_files(folder, types):
 
 def processing(input_path, output_path):
 
-    #align_cameras_depth_maps(input_path, output_path)
-    export_masks(input_path, output_path)
+    align_cameras_depth_maps(input_path, output_path)
+    #export_masks(input_path, output_path)
     export_dense_cloud(input_path, output_path)
     export_model(input_path, output_path)
     export_depth_maps(input_path, output_path)
