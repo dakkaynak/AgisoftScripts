@@ -22,29 +22,29 @@ def export_dense_cloud(input_path, output_path):
 
         f = Metashape.PointCloud.Filter()
 
-        if parameters["filtering_reprojection_error"]:
+        if parameters["filtering"]["reprojection_error"]:
             f.init(chunk, criterion=Metashape.PointCloud.Filter.ReprojectionError)
-            f.removePoints(parameters["filter_threshold_reprojection_error"])
+            f.removePoints(parameters["filtering"]["threshold_reprojection_error"])
 
-        if parameters["filtering_reconstruction_uncertainty"]:
+        if parameters["filtering"]["reconstruction_uncertainty"]:
             f.init(chunk, criterion=Metashape.PointCloud.Filter.ReconstructionUncertainty)
-            f.removePoints(parameters["filter_threshold_reconstruction_uncertainty"])
+            f.removePoints(parameters["filtering"]["threshold_reconstruction_uncertainty"])
 
-        if parameters["filtering_image_count"]:
+        if parameters["filtering"]["image_count"]:
             f.init(chunk, criterion=Metashape.PointCloud.Filter.ImageCount)
-            f.removePoints(parameters["filter_threshold_image_count"])
+            f.removePoints(parameters["filtering"]["threshold_image_count"])
 
-        if parameters["filtering_reprojection_accuracy"]:
+        if parameters["filtering"]["reprojection_accuracy"]:
             f.init(chunk, criterion=Metashape.PointCloud.Filter.ProjectionAccuracy)
-            f.removePoints(parameters["filter_threshold_projection_accuracy"])
+            f.removePoints(parameters["filtering"]["threshold_projection_accuracy"])
 
         chunk.buildDenseCloud(point_colors=True,
-                              point_confidence=parameters["dense_point_confidence"],
-                              keep_depth=parameters["dense_keep_depth"],
-                              max_neighbors=parameters["dense_max_neighbors"],
-                              subdivide_task=parameters["dense_subdivide_task"],
-                              workitem_size_cameras=parameters["dense_workitem_size_cameras"],
-                              max_workgroup_size=parameters["dense_max_workgroup_size"]
+                              point_confidence=parameters["dense_cloud"]["point_confidence"],
+                              keep_depth=parameters["dense_cloud"]["keep_depth"],
+                              max_neighbors=parameters["dense_cloud"]["max_neighbors"],
+                              subdivide_task=parameters["dense_cloud"]["subdivide_task"],
+                              workitem_size_cameras=parameters["dense_cloud"]["workitem_size_cameras"],
+                              max_workgroup_size=parameters["dense_cloud"]["max_workgroup_size"]
                               )
         doc.save()
 
@@ -52,24 +52,24 @@ def export_dense_cloud(input_path, output_path):
         doc.save()
 
         chunk.exportPoints(path=f"{output_path}{os.path.sep}dense_cloud.las",
-                           source_data=getattr(Metashape, parameters["exp_dense_source_data"]),
-                           binary=parameters["exp_dense_binary"],
-                           save_normals=parameters["exp_dense_save_normals"],
-                           save_colors=parameters["exp_dense_save_colors"],
-                           save_classes=parameters["exp_dense_save_classes"],
-                           save_confidence=parameters["exp_dense_save_confidence"],
-                           raster_transform=getattr(Metashape, parameters["exp_dense_raster_transform"]),
-                           colors_rgb_8bit=parameters["exp_dense_colors_rgb_8bit"],
-                           comment=parameters["exp_dense_comment"],
-                           save_comment=parameters["exp_dense_save_comment"],
-                           format=getattr(Metashape, parameters["exp_dense_format"]),
-                           image_format=getattr(Metashape, parameters["exp_dense_image_format"]),
-                           clip_to_boundary=parameters["exp_dense_clip_to_boundary"],
-                           block_width=parameters["exp_dense_block_width"],
-                           block_height=parameters["exp_dense_block_height"],
-                           split_in_blocks=parameters["exp_dense_split_in_blocks"],
-                           save_images=parameters["exp_dense_save_images"],
-                           compression=parameters["exp_dense_compression"],
-                           screen_space_error=parameters["exp_dense_screen_space_error"],
-                           subdivide_task=parameters["exp_dense_subdivide_task"])
+                           source_data=getattr(Metashape, parameters["export_dense_cloud"]["source_data"]),
+                           binary=parameters["export_dense_cloud"]["binary"],
+                           save_normals=parameters["export_dense_cloud"]["save_normals"],
+                           save_colors=parameters["export_dense_cloud"]["save_colors"],
+                           save_classes=parameters["export_dense_cloud"]["save_classes"],
+                           save_confidence=parameters["export_dense_cloud"]["save_confidence"],
+                           raster_transform=getattr(Metashape, parameters["export_dense_cloud"]["raster_transform"]),
+                           colors_rgb_8bit=parameters["export_dense_cloud"]["colors_rgb_8bit"],
+                           comment=parameters["export_dense_cloud"]["comment"],
+                           save_comment=parameters["export_dense_cloud"]["save_comment"],
+                           format=getattr(Metashape, parameters["export_dense_cloud"]["format"]),
+                           image_format=getattr(Metashape, parameters["export_dense_cloud"]["image_format"]),
+                           clip_to_boundary=parameters["export_dense_cloud"]["clip_to_boundary"],
+                           block_width=parameters["export_dense_cloud"]["block_width"],
+                           block_height=parameters["export_dense_cloud"]["block_height"],
+                           split_in_blocks=parameters["export_dense_cloud"]["split_in_blocks"],
+                           save_images=parameters["export_dense_cloud"]["save_images"],
+                           compression=parameters["export_dense_cloud"]["compression"],
+                           screen_space_error=parameters["export_dense_cloud"]["screen_space_error"],
+                           subdivide_task=parameters["export_dense_cloud"]["subdivide_task"])
         doc.save()

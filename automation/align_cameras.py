@@ -1,6 +1,7 @@
 import os
 import Metashape
 import json
+from import_masks import import_masks
 
 
 def find_files(folder, types):
@@ -37,23 +38,25 @@ def align_cameras_depth_maps(input_path, output_path):
 
     print(str(len(chunk.cameras)) + " images loaded")
 
-    chunk.matchPhotos(keypoint_limit=parameters["match_keypoint_limit"],
-                      tiepoint_limit=parameters["match_tiepoint_limit"],
-                      generic_preselection=parameters["match_generic_preselection"],
-                      reference_preselection=parameters["match_reference_preselection"])
+    import_masks(input_path, output_path)
+
+    chunk.matchPhotos(keypoint_limit=parameters["matching"]["keypoint_limit"],
+                      tiepoint_limit=parameters["matching"]["tiepoint_limit"],
+                      generic_preselection=parameters["matching"]["generic_preselection"],
+                      reference_preselection=parameters["matching"]["reference_preselection"])
     doc.save()
 
-    chunk.alignCameras(min_image=parameters["align_min_image"],
-                       adaptive_fitting=parameters["align_adaptive_fitting"],
-                       reset_alignment=parameters["align_reset_alignment"],
-                       subdivide_task=parameters["align_subdivide_task"])
+    chunk.alignCameras(min_image=parameters["alignment"]["min_image"],
+                       adaptive_fitting=parameters["alignment"]["adaptive_fitting"],
+                       reset_alignment=parameters["alignment"]["reset_alignment"],
+                       subdivide_task=parameters["alignment"]["subdivide_task"])
     doc.save()
 
-    chunk.buildDepthMaps(downscale=parameters["align_downscale"],
-                         filter_mode=getattr(Metashape, parameters["align_filter_mode"]),
-                         reuse_depth=parameters["align_reuse_depth"],
-                         max_neighbors=parameters["align_max_neighbors"],
-                         subdivide_task=parameters["align_subdivide_task"],
-                         workitem_size_cameras=parameters["align_workitem_size_cameras"],
-                         max_workgroup_size=parameters["align_max_workgroup_size"])
+    chunk.buildDepthMaps(downscale=parameters["alignment"]["downscale"],
+                         filter_mode=getattr(Metashape, parameters["alignment"]["filter_mode"]),
+                         reuse_depth=parameters["alignment"]["reuse_depth"],
+                         max_neighbors=parameters["alignment"]["max_neighbors"],
+                         subdivide_task=parameters["alignment"]["subdivide_task"],
+                         workitem_size_cameras=parameters["alignment"]["workitem_size_cameras"],
+                         max_workgroup_size=parameters["alignment"]["max_workgroup_size"])
     doc.save()

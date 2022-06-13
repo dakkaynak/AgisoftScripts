@@ -1,7 +1,8 @@
 import os
 import Metashape
 import json
-import ast
+import glob
+
 
 
 def export_depth_maps(input_path, output_path):
@@ -22,13 +23,31 @@ def export_depth_maps(input_path, output_path):
 
         if not chunk.model:
 
-            chunk.buildModel(surface_type=getattr(Metashape, parameters["model_surface_type"]),
-                             interpolation=getattr(Metashape, parameters["model_interpolation"]),
-                             face_count=getattr(Metashape, parameters["model_face_count"]),
-                             face_count_custom=parameters["model_face_count_custom"],
-                             source_data=getattr(Metashape, parameters["model_source_data"]),
-                             vertex_colors=parameters["model_vertex_colors"],
-                             keep_depth=parameters["keep_depth"])
+            f = Metashape.PointCloud.Filter()
+
+            if parameters["filtering"]["reprojection_error"]:
+                f.init(chunk, criterion=Metashape.PointCloud.Filter.ReprojectionError)
+                f.removePoints(parameters["filtering"]["threshold_reprojection_error"])
+
+            if parameters["filtering"]["reconstruction_uncertainty"]:
+                f.init(chunk, criterion=Metashape.PointCloud.Filter.ReconstructionUncertainty)
+                f.removePoints(parameters["filtering"]["threshold_reconstruction_uncertainty"])
+
+            if parameters["filtering"]["image_count"]:
+                f.init(chunk, criterion=Metashape.PointCloud.Filter.ImageCount)
+                f.removePoints(parameters["filtering"]["threshold_image_count"])
+
+            if parameters["filtering"]["reprojection_accuracy"]:
+                f.init(chunk, criterion=Metashape.PointCloud.Filter.ProjectionAccuracy)
+                f.removePoints(parameters["filtering"]["threshold_projection_accuracy"])
+
+            chunk.buildModel(surface_type=getattr(Metashape, parameters["model"]["surface_type"]),
+                             interpolation=getattr(Metashape, parameters["model"]["interpolation"]),
+                             face_count=getattr(Metashape, parameters["model"]["face_count"]),
+                             face_count_custom=parameters["model"]["face_count_custom"],
+                             source_data=getattr(Metashape, parameters["model"]["source_data"]),
+                             vertex_colors=parameters["model"]["vertex_colors"],
+                             keep_depth=parameters["model"]["keep_depth"])
             doc.save()
 
         if chunk.transform.scale is None:
@@ -53,3 +72,12 @@ def export_depth_maps(input_path, output_path):
                 print(f"Depth map for {camera.label} exported successfully!")
 
         doc.save()
+    # if parameters["depth_convert_zeroes_nan"]:
+    #
+    #     for image_file in glob.iglob(f"{output_path}{os.path.sep}depth_maps"):
+    #         im = Image.open(image_file)
+    #         image_out = numpy.asarray(im)
+    #         image_out = image_out[image_out == 0] = float("NaN")
+    #         file_name = image_file.split(os.sep)[-1]
+    #         print(f"{output_path}{os.path.sep}depth_maps{os.path.sep}file_name)")
+    #         image_out = image_out.save(f"{output_path}{os.path.sep}depth_maps{os.path.sep}NaN_{file_name})")

@@ -10,7 +10,7 @@ from export_depth_maps import export_depth_maps
 from export_model import export_model
 from export_normal_maps import export_normal_maps
 from export_report import export_report
-from import_masks import export_masks
+from import_masks import import_masks
 
 root = tk.Tk()
 root.withdraw()
@@ -23,7 +23,6 @@ def find_files(folder, types):
 def processing(input_path, output_path):
 
     align_cameras_depth_maps(input_path, output_path)
-    #export_masks(input_path, output_path)
     export_dense_cloud(input_path, output_path)
     export_model(input_path, output_path)
     export_depth_maps(input_path, output_path)

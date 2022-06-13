@@ -21,14 +21,34 @@ def export_normal_maps(input_path, output_path):
         doc.read_only = False
 
         if not chunk.model:
-            chunk.buildModel(surface_type=getattr(Metashape, parameters["model_surface_type"]),
-                             interpolation=getattr(Metashape, parameters["model_interpolation"]),
-                             face_count=getattr(Metashape, parameters["model_face_count"]),
-                             face_count_custom=parameters["model_face_count_custom"],
-                             source_data=getattr(Metashape, parameters["model_source_data"]),
-                             vertex_colors=parameters["model_vertex_colors"],
-                             keep_depth=parameters["keep_depth"])
+
+            f = Metashape.PointCloud.Filter()
+
+            if parameters["filtering"]["reprojection_error"]:
+                f.init(chunk, criterion=Metashape.PointCloud.Filter.ReprojectionError)
+                f.removePoints(parameters["filtering"]["threshold_reprojection_error"])
+
+            if parameters["filtering"]["reconstruction_uncertainty"]:
+                f.init(chunk, criterion=Metashape.PointCloud.Filter.ReconstructionUncertainty)
+                f.removePoints(parameters["filtering"]["threshold_reconstruction_uncertainty"])
+
+            if parameters["filtering"]["image_count"]:
+                f.init(chunk, criterion=Metashape.PointCloud.Filter.ImageCount)
+                f.removePoints(parameters["filtering"]["threshold_image_count"])
+
+            if parameters["filtering"]["reprojection_accuracy"]:
+                f.init(chunk, criterion=Metashape.PointCloud.Filter.ProjectionAccuracy)
+                f.removePoints(parameters["filtering"]["threshold_projection_accuracy"])
+
+            chunk.buildModel(surface_type=getattr(Metashape, parameters["model"]["surface_type"]),
+                             interpolation=getattr(Metashape, parameters["model"]["interpolation"]),
+                             face_count=getattr(Metashape, parameters["model"]["face_count"]),
+                             face_count_custom=parameters["model"]["face_count_custom"],
+                             source_data=getattr(Metashape, parameters["model"]["source_data"]),
+                             vertex_colors=parameters["model"]["vertex_colors"],
+                             keep_depth=parameters["model"]["keep_depth"])
             doc.save()
+
         if chunk.transform.scale is None:
             scale = 1
             print("Scale set to 1")
