@@ -1,6 +1,8 @@
 import os
 import Metashape
 import json
+import tkinter as tk
+from tkinter import filedialog
 import glob
 
 
@@ -72,12 +74,28 @@ def export_depth_maps(input_path, output_path):
                 print(f"Depth map for {camera.label} exported successfully!")
 
         doc.save()
-    # if parameters["depth_convert_zeroes_nan"]:
-    #
-    #     for image_file in glob.iglob(f"{output_path}{os.path.sep}depth_maps"):
-    #         im = Image.open(image_file)
-    #         image_out = numpy.asarray(im)
-    #         image_out = image_out[image_out == 0] = float("NaN")
-    #         file_name = image_file.split(os.sep)[-1]
-    #         print(f"{output_path}{os.path.sep}depth_maps{os.path.sep}file_name)")
-    #         image_out = image_out.save(f"{output_path}{os.path.sep}depth_maps{os.path.sep}NaN_{file_name})")
+
+if __name__ == "__main__":
+
+    root = tk.Tk()
+    root.withdraw()
+
+    # Opens dialog window to specify input and output folder
+    print("Please select input folder containing images.")
+    input_path = filedialog.askdirectory()
+    root.title('Select input folder')
+    output_path = f"{input_path}{os.path.sep}output"
+
+    # Checks whether set of images has already been processed
+    if os.path.exists(f"{output_path}{os.path.sep}project.psx"):
+        msg_box = tk.messagebox.askokcancel(title="Warning",
+                                            message="The dataset you specified has already been processed."
+                                                    " If you proceed, previous files will be deleted.")
+        if msg_box == 0:
+            print("Please select a different set of images.")
+
+        elif msg_box == 1:
+            export_depth_maps(input_path, output_path)
+
+    elif not os.path.exists(f"{output_path}{os.path.sep}project.psx"):
+        export_depth_maps(input_path, output_path)

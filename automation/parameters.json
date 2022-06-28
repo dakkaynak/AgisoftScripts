@@ -1,6 +1,6 @@
 {
   "matching" : {
-              "keypoint_limit": 40000,
+              "keypoint_limit": 41000,
               "tiepoint_limit": 10000,
               "generic_preselection": true,
               "reference_preselection": true
@@ -13,7 +13,7 @@
               "subdivide_task": false,
               "downscale": 4,
               "filter_mode": "MildFiltering",
-              "reuse_depth": false,
+              "reuse_depth": true,
               "max_neighbors": 16,
               "depth_maps_subdivide_task": true,
               "workitem_size_cameras": 20,
@@ -21,7 +21,7 @@
   },
 
   "filtering" : {
-              "reprojection_error" : true,
+              "reprojection_error" : false,
               "threshold_reprojection_error" : 1,
               "reconstruction_uncertainty" : false,
               "threshold_reconstruction_uncertainty" : 5,
@@ -32,7 +32,7 @@
   },
 
   "dense_cloud" : {
-              "export" : true,
+              "export" : false,
               "point_colors" : true,
               "point_confidence" : false,
               "keep_depth" : true,
