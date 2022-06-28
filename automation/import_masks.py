@@ -32,7 +32,7 @@ def import_masks(input_path, output_path):
 
     chunk.generateMasks(path=f"{input_path}{os.path.sep}masks{os.path.sep}"+"{filename}.jpg",
                         masking_mode=Metashape.MaskingMode.MaskingModeFile,
-                        cameras=chunk.cameras)
+                        cameras=[c.key for c in chunk.cameras if c.type == Metashape.Camera.Type.Regular])
 
     doc.save()
 
