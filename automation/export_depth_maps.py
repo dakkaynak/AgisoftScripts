@@ -72,12 +72,3 @@ def export_depth_maps(input_path, output_path):
                 print(f"Depth map for {camera.label} exported successfully!")
 
         doc.save()
-    # if parameters["depth_convert_zeroes_nan"]:
-    #
-    #     for image_file in glob.iglob(f"{output_path}{os.path.sep}depth_maps"):
-    #         im = Image.open(image_file)
-    #         image_out = numpy.asarray(im)
-    #         image_out = image_out[image_out == 0] = float("NaN")
-    #         file_name = image_file.split(os.sep)[-1]
-    #         print(f"{output_path}{os.path.sep}depth_maps{os.path.sep}file_name)")
-    #         image_out = image_out.save(f"{output_path}{os.path.sep}depth_maps{os.path.sep}NaN_{file_name})")
