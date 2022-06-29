@@ -1,0 +1,121 @@
+{
+  "matching" : {
+              "keypoint_limit": 40000,
+              "tiepoint_limit": 10000,
+              "generic_preselection": true,
+              "reference_preselection": true
+  },
+
+  "alignment" : {
+              "min_image": 2,
+              "adaptive_fitting": true,
+              "reset_alignment": false,
+              "subdivide_task": false,
+              "downscale": 4,
+              "filter_mode": "MildFiltering",
+              "reuse_depth": false,
+              "max_neighbors": 16,
+              "depth_maps_subdivide_task": true,
+              "workitem_size_cameras": 20,
+              "max_workgroup_size": 100
+  },
+
+  "filtering" : {
+              "reprojection_error" : true,
+              "threshold_reprojection_error" : 1,
+              "reconstruction_uncertainty" : false,
+              "threshold_reconstruction_uncertainty" : 5,
+              "image_count" : false,
+              "threshold_image_count" :  2,
+              "reprojection_accuracy" : false,
+              "threshold_projection_accuracy" : 5
+  },
+
+  "dense_cloud" : {
+              "export" : true,
+              "point_colors" : true,
+              "point_confidence" : false,
+              "keep_depth" : true,
+              "max_neighbors" : 100,
+              "subdivide_task" : true,
+              "workitem_size_cameras" : 20,
+              "max_workgroup_size" : 100
+  },
+
+  "export_dense_cloud" : {
+              "source_data" : "DenseCloudData",
+              "binary" : true,
+              "save_normals" : true,
+              "save_colors" : true,
+              "save_classes" : true,
+              "save_confidence" : true,
+              "raster_transform" : "RasterTransformNone",
+              "colors_rgb_8bit" : true,
+              "comment" : "' '",
+              "save_comment" : true,
+              "format" : "PointsFormatNone",
+              "image_format" : "ImageFormatJPEG",
+              "clip_to_boundary" : true,
+              "block_width" : 1000,
+              "block_height" : 1000,
+              "split_in_blocks" : false,
+              "save_images" : false,
+              "compression" : true,
+              "screen_space_error" : 16,
+              "subdivide_task" : true
+  },
+
+  "model" : {
+              "export_model" : true,
+              "surface_type" : "Arbitrary",
+              "interpolation" : "EnabledInterpolation",
+              "face_count" : "CustomFaceCount",
+              "face_count_custom" : 60000000,
+              "source_data" : "DepthMapsData",
+              "vertex_colors" : false,
+              "keep_depth" : true
+  },
+
+  "UV" : {
+              "mapping_mode" : "GenericMapping",
+              "page_count" : 1,
+              "texture_size" : 8192
+  },
+
+  "texture" : {
+              "blending_mode" : "MosaicBlending",
+              "size" : 8192,
+              "fill_holes" : true,
+              "ghosting_filter" : true,
+              "transfer_texture" : true
+  },
+
+  "export_model" : {
+              "binary" : true,
+              "precision" : 6,
+              "texture_format" : "ImageFormatJPEG",
+              "save_texture" : true,
+              "save_uv" : true,
+              "save_normals" : true,
+              "save_colors" : true,
+              "save_confidence" : false,
+              "save_cameras" : true,
+              "save_markers" : true,
+              "save_udim" : false,
+              "save_alpha" : false,
+              "embed_texture" : false,
+              "strip_extensions" : false,
+              "raster_transform" : "RasterTransformNone",
+              "colors_rgb_8bit" : true,
+              "exp_comment" : "' '",
+              "save_comment" : true,
+              "format" : "ModelFormatNone",
+              "clip_to_boundary" : true
+  },
+
+  "export_normal_maps" : true,
+
+  "export_depth_maps" : true,
+
+  "export_report" : true
+}
