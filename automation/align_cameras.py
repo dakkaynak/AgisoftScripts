@@ -40,7 +40,7 @@ def align_cameras(input_path, output_path):
 
     print(str(len(chunk.cameras)) + " images loaded")
 
-    import_masks(input_path, output_path)
+    #import_masks(input_path, output_path)
 
     chunk.matchPhotos(keypoint_limit=parameters["matching"]["keypoint_limit"],
                       tiepoint_limit=parameters["matching"]["tiepoint_limit"],

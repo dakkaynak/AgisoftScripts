@@ -5,6 +5,8 @@ import tkinter as tk
 
 from tkinter import filedialog
 from align_cameras import align_cameras
+from build_model import build_model
+from build_dense_cloud import build_dense_cloud
 from export_dense_cloud import export_dense_cloud
 from export_depth_maps import export_depth_maps
 from export_model import export_model
@@ -23,7 +25,9 @@ def find_files(folder, types):
 def processing(input_path, output_path):
     # import_masks(input_path, output_path)
     align_cameras(input_path, output_path)
+    build_dense_cloud(input_path, output_path)
     export_dense_cloud(input_path, output_path)
+    build_model(input_path,output_path)
     export_model(input_path, output_path)
     export_depth_maps(input_path, output_path)
     export_normal_maps(input_path, output_path)

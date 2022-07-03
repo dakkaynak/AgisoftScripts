@@ -31,8 +31,9 @@
               "threshold_projection_accuracy" : 5
   },
 
+  "build_dense_cloud" : true,
+
   "dense_cloud" : {
-              "export" : false,
               "point_colors" : true,
               "point_confidence" : false,
               "keep_depth" : true,
@@ -41,6 +42,8 @@
               "workitem_size_cameras" : 20,
               "max_workgroup_size" : 100
   },
+
+  "export_dense_cloud_to_file" : true,
 
   "export_dense_cloud" : {
               "source_data" : "DenseCloudData",
@@ -65,8 +68,9 @@
               "subdivide_task" : true
   },
 
+  "build_model" : true,
+
   "model" : {
-              "export_model" : true,
               "surface_type" : "Arbitrary",
               "interpolation" : "EnabledInterpolation",
               "face_count" : "CustomFaceCount",
@@ -90,6 +94,8 @@
               "transfer_texture" : true
   },
 
+  "export_model_to_file" : true,
+
   "export_model" : {
               "binary" : true,
               "precision" : 6,
@@ -112,6 +118,7 @@
               "format" : "ModelFormatNone",
               "clip_to_boundary" : true
   },
+
 
   "export_normal_maps" : true,
 
