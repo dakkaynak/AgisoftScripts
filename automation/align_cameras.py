@@ -63,6 +63,7 @@ def align_cameras(input_path, output_path):
                          max_workgroup_size=parameters["alignment"]["max_workgroup_size"])
     doc.save()
 
+
 if __name__ == "__main__":
 
     root = tk.Tk()

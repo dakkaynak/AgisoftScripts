@@ -4,6 +4,7 @@ import json
 import tkinter as tk
 from tkinter import filedialog
 
+
 def export_dense_cloud(input_path, output_path):
     """
     Exports dense cloud from the Metashape project specified in the output path.
@@ -43,6 +44,8 @@ def export_dense_cloud(input_path, output_path):
                            screen_space_error=parameters["export_dense_cloud"]["screen_space_error"],
                            subdivide_task=parameters["export_dense_cloud"]["subdivide_task"])
         doc.save()
+
+
 if __name__ == "__main__":
 
     root = tk.Tk()
