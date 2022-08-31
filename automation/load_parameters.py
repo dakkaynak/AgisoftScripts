@@ -1,34 +1,23 @@
 import os
-import Metashape
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
+import pandas
+import warnings
+
+warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
 
 
-def import_masks(input_path, output_path):
-    """
-    Imports masks to mask areas not relevant to the model. Folder "masks" needs to be located within image directory.
-    :param output_path: Specifies the path of the project.psx file
-    """
+def load_parameters(input_path):
 
-    doc = Metashape.Document()
-    doc.open(f"{output_path}{os.path.sep}project.psx")
-    chunk = doc.chunk
+    parameters_excel = pandas.read_excel(f"{input_path}{os.path.sep}parameters{os.path.sep}parameters.xlsx",
+                                         sheet_name='parameters',
+                                         true_values=["true"],
+                                         false_values=["false"])
 
-    doc.read_only = False
-    doc.save()
-    doc.read_only = False
+    print(parameters_excel)
 
-    if os.path.exists(f"{input_path}{os.path.sep}masks"):
-        pass
-    else:
-            os.mkdir(f"{input_path}{os.path.sep}masks")
-
-    chunk.generateMasks(path=f"{input_path}{os.path.sep}masks{os.path.sep}"+"{filename}.jpg",
-                        masking_mode=Metashape.MaskingMode.MaskingModeFile,
-                        cameras=[c.key for c in chunk.cameras if c.type == Metashape.Camera.Type.Regular])
-
-    doc.save()
+    return parameters_excel
 
 
 if __name__ == "__main__":
@@ -51,9 +40,7 @@ if __name__ == "__main__":
             print("Please select a different set of images.")
 
         elif msg_box == 1:
-            import_masks(input_path, output_path)
+            load_parameters(input_path)
 
     elif not os.path.exists(f"{output_path}{os.path.sep}project.psx"):
-        import_masks(input_path, output_path)
-
-        
+        load_parameters(input_path)

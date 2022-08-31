@@ -1,21 +1,19 @@
 import os
 import Metashape
-import json
 import tkinter as tk
 from tkinter import filedialog
+from tkinter import messagebox
+from load_parameters import load_parameters
 
 
-def export_report(input_path, output_path):
+def export_report(input_path, output_path, parameters):
     """
     Exports a report of the processed dataset.
     :param output_path: Specifies the path of the project.psx file
     """
 
-    parameters = json.load(open(f"{input_path}{os.path.sep}parameters.json", "r"))
-
-    if parameters["export_report"]:
-
-        doc = Metashape.app.document
+    if parameters.iloc[0]["export_report"]:
+        doc = Metashape.Document()
         doc.open(f"{output_path}{os.path.sep}project.psx")
         chunk = doc.chunk
 
@@ -25,6 +23,8 @@ def export_report(input_path, output_path):
 
         chunk.exportReport(f"{output_path}{os.path.sep}report.pdf")
         doc.save()
+
+
 if __name__ == "__main__":
 
     root = tk.Tk()
@@ -36,6 +36,8 @@ if __name__ == "__main__":
     root.title('Select input folder')
     output_path = f"{input_path}{os.path.sep}output"
 
+    parameters = load_parameters(input_path)
+
     # Checks whether set of images has already been processed
     if os.path.exists(f"{output_path}{os.path.sep}project.psx"):
         msg_box = tk.messagebox.askokcancel(title="Warning",
@@ -45,7 +47,7 @@ if __name__ == "__main__":
             print("Please select a different set of images.")
 
         elif msg_box == 1:
-            export_report(input_path, output_path)
+            export_report(input_path, output_path, parameters)
 
     elif not os.path.exists(f"{output_path}{os.path.sep}project.psx"):
-        export_report(input_path, output_path)
+        export_report(input_path, output_path, parameters)

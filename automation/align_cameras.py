@@ -1,9 +1,9 @@
 import os
 import Metashape
-import json
+from load_parameters import load_parameters
 import tkinter as tk
 from tkinter import filedialog
-from import_masks import import_masks
+from tkinter import messagebox
 
 
 def find_files(folder, types):
@@ -16,14 +16,14 @@ def find_files(folder, types):
     return [entry.path for entry in os.scandir(folder) if (entry.is_file() and os.path.splitext(entry.name)[1].lower() in types)]
 
 
-def align_cameras(input_path, output_path):
+def align_cameras(input_path, output_path, parameters):
     """
     Creates a new Chunk in a new Metashape document and aligns imported cameras.
     :param input_path: Folder from which images will be imported
     :param output_path: folder where project files and exported files will be stored
     """
 
-    parameters = json.load(open(f"{input_path}{os.path.sep}parameters.json", "r"))
+    print(parameters["matching/keypoint_limit"])
 
     images = find_files(input_path, [".jpg", ".jpeg", ".tif", ".tiff", ".dng", ".DNG"])
 
@@ -40,27 +40,25 @@ def align_cameras(input_path, output_path):
 
     print(str(len(chunk.cameras)) + " images loaded")
 
-    #import_masks(input_path, output_path)
-
-    chunk.matchPhotos(keypoint_limit=parameters["matching"]["keypoint_limit"],
-                      tiepoint_limit=parameters["matching"]["tiepoint_limit"],
-                      generic_preselection=parameters["matching"]["generic_preselection"],
-                      reference_preselection=parameters["matching"]["reference_preselection"])
+    chunk.matchPhotos(keypoint_limit=parameters.iloc[0]['matching/keypoint_limit'],
+                      tiepoint_limit=parameters.iloc[0]["matching/tiepoint_limit"],
+                      generic_preselection=parameters.iloc[0]["matching/generic_preselection"],
+                      reference_preselection=parameters.iloc[0]["matching/reference_preselection"])
     doc.save()
 
-    chunk.alignCameras(min_image=parameters["alignment"]["min_image"],
-                       adaptive_fitting=parameters["alignment"]["adaptive_fitting"],
-                       reset_alignment=parameters["alignment"]["reset_alignment"],
-                       subdivide_task=parameters["alignment"]["subdivide_task"])
+    chunk.alignCameras(min_image=parameters.iloc[0]["alignment/min_image"],
+                       adaptive_fitting=parameters.iloc[0]["alignment/adaptive_fitting"],
+                       reset_alignment=parameters.iloc[0]["alignment/reset_alignment"],
+                       subdivide_task=parameters.iloc[0]["alignment/subdivide_task"])
     doc.save()
 
-    chunk.buildDepthMaps(downscale=parameters["alignment"]["downscale"],
-                         filter_mode=getattr(Metashape, parameters["alignment"]["filter_mode"]),
-                         reuse_depth=parameters["alignment"]["reuse_depth"],
-                         max_neighbors=parameters["alignment"]["max_neighbors"],
-                         subdivide_task=parameters["alignment"]["subdivide_task"],
-                         workitem_size_cameras=parameters["alignment"]["workitem_size_cameras"],
-                         max_workgroup_size=parameters["alignment"]["max_workgroup_size"])
+    chunk.buildDepthMaps(downscale=parameters.iloc[0]["alignment/downscale"],
+                         filter_mode=getattr(Metashape, parameters.iloc[0]["alignment/filter_mode"]),
+                         reuse_depth=parameters.iloc[0]["alignment/reuse_depth"],
+                         max_neighbors=parameters.iloc[0]["alignment/max_neighbors"],
+                         subdivide_task=parameters.iloc[0]["alignment/subdivide_task"],
+                         workitem_size_cameras=parameters.iloc[0]["alignment/workitem_size_cameras"],
+                         max_workgroup_size=parameters.iloc[0]["alignment/max_workgroup_size"])
     doc.save()
 
 
@@ -74,6 +72,7 @@ if __name__ == "__main__":
     input_path = filedialog.askdirectory()
     root.title('Select input folder')
     output_path = f"{input_path}{os.path.sep}output"
+    parameters = load_parameters(input_path)
 
     # Checks whether set of images has already been processed
     if os.path.exists(f"{output_path}{os.path.sep}project.psx"):
@@ -84,7 +83,7 @@ if __name__ == "__main__":
             print("Please select a different set of images.")
 
         elif msg_box == 1:
-            align_cameras(input_path, output_path)
+            align_cameras(input_path, output_path, parameters)
 
     elif not os.path.exists(f"{output_path}{os.path.sep}project.psx"):
-        align_cameras(input_path, output_path)
+        align_cameras(input_path, output_path, parameters)

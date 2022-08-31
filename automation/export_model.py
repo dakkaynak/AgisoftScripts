@@ -1,20 +1,19 @@
 import os
 import Metashape
-import json
 import tkinter as tk
 from tkinter import filedialog
+from tkinter import messagebox
+from load_parameters import load_parameters
 
 
-def export_model(input_path, output_path):
+def export_model(input_path, output_path, parameters):
     """
     Exports a model and texture from the project specified in the output path
     :param output_path: Specifies the path of the project.psx file
     """
-    parameters = json.load(open(f"{input_path}{os.path.sep}parameters.json", "r"))
 
-    if parameters["export_model_to_file"]:
-
-        doc = Metashape.app.document
+    if parameters.iloc[0]["export_model_to_file"]:
+        doc = Metashape.Document()
         doc.open(f"{output_path}{os.path.sep}project.psx")
         chunk = doc.chunk
 
@@ -22,29 +21,30 @@ def export_model(input_path, output_path):
         doc.save()
         doc.read_only = False
 
-
         chunk.exportModel(path=f"{output_path}{os.path.sep}model.obj",
-                          binary=parameters["export_model"]["binary"],
-                          precision=parameters["export_model"]["precision"],
-                          texture_format=getattr(Metashape, parameters["export_model"]["texture_format"]),
-                          save_texture=parameters["export_model"]["save_texture"],
-                          save_uv=parameters["export_model"]["save_uv"],
-                          save_normals=parameters["export_model"]["save_normals"],
-                          save_colors=parameters["export_model"]["save_colors"],
-                          save_confidence=parameters["export_model"]["save_confidence"],
-                          save_cameras=parameters["export_model"]["save_cameras"],
-                          save_markers=parameters["export_model"]["save_markers"],
-                          save_udim=parameters["export_model"]["save_udim"],
-                          save_alpha=parameters["export_model"]["save_alpha"],
-                          embed_texture=parameters["export_model"]["embed_texture"],
-                          strip_extensions=parameters["export_model"]["strip_extensions"],
-                          raster_transform=getattr(Metashape, parameters["export_model"]["raster_transform"]),
-                          colors_rgb_8bit=parameters["export_model"]["colors_rgb_8bit"],
-                          comment=parameters["export_model"]["colors_rgb_8bit"],
-                          save_comment=parameters["export_model"]["exp_comment"],
-                          format=getattr(Metashape, parameters["export_model"]["format"]),
-                          clip_to_boundary=parameters["export_model"]["clip_to_boundary"])
+                          binary=parameters.iloc[0]["export_model/binary"],
+                          precision=parameters.iloc[0]["export_model/precision"],
+                          texture_format=getattr(Metashape, parameters.iloc[0]["export_model/texture_format"]),
+                          save_texture=parameters.iloc[0]["export_model/save_texture"],
+                          save_uv=parameters.iloc[0]["export_model/save_uv"],
+                          save_normals=parameters.iloc[0]["export_model/save_normals"],
+                          save_colors=parameters.iloc[0]["export_model/save_colors"],
+                          save_confidence=parameters.iloc[0]["export_model/save_confidence"],
+                          save_cameras=parameters.iloc[0]["export_model/save_cameras"],
+                          save_markers=parameters.iloc[0]["export_model/save_markers"],
+                          save_udim=parameters.iloc[0]["export_model/save_udim"],
+                          save_alpha=parameters.iloc[0]["export_model/save_alpha"],
+                          embed_texture=parameters.iloc[0]["export_model/embed_texture"],
+                          strip_extensions=parameters.iloc[0]["export_model/strip_extensions"],
+                          raster_transform=getattr(Metashape, parameters.iloc[0]["export_model/raster_transform"]),
+                          colors_rgb_8bit=parameters.iloc[0]["export_model/colors_rgb_8bit"],
+                          comment=parameters.iloc[0]["export_model/colors_rgb_8bit"],
+                          save_comment=parameters.iloc[0]["export_model/exp_comment"],
+                          format=getattr(Metashape, parameters.iloc[0]["export_model/format"]),
+                          clip_to_boundary=parameters.iloc[0]["export_model/clip_to_boundary"])
         doc.save()
+
+
 if __name__ == "__main__":
 
     root = tk.Tk()
@@ -56,6 +56,8 @@ if __name__ == "__main__":
     root.title('Select input folder')
     output_path = f"{input_path}{os.path.sep}output"
 
+    parameters = load_parameters(input_path)
+
     # Checks whether set of images has already been processed
     if os.path.exists(f"{output_path}{os.path.sep}project.psx"):
         msg_box = tk.messagebox.askokcancel(title="Warning",
@@ -65,7 +67,7 @@ if __name__ == "__main__":
             print("Please select a different set of images.")
 
         elif msg_box == 1:
-            export_model(input_path, output_path)
+            export_model(input_path, output_path, parameters)
 
     elif not os.path.exists(f"{output_path}{os.path.sep}project.psx"):
-        export_model(input_path, output_path)
+        export_model(input_path, output_path, parameters)
