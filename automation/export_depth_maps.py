@@ -6,7 +6,7 @@ from tkinter import messagebox
 from load_parameters import load_parameters
 
 
-def export_depth_maps(input_path, output_path, parameters):
+def export_depth_maps(input_path, parameters):
     """
     Exports depth maps from the project specified in the output path
     :param output_path: Specifies the path of the project.psx file
@@ -14,7 +14,7 @@ def export_depth_maps(input_path, output_path, parameters):
 
     if parameters.iloc[0]["export_depth_maps"]:
         doc = Metashape.Document()
-        doc.open(f"{output_path}{os.path.sep}project.psx")
+        doc.open(os.path.join(input_path, os.pardir, 'photogrammetry', 'project.psx'))
         chunk = doc.chunk
 
         doc.read_only = False
@@ -56,10 +56,13 @@ def export_depth_maps(input_path, output_path, parameters):
         else:
             scale = chunk.transform.scale
 
-        if os.path.exists(f"{output_path}{os.path.sep}depth_maps"):
+        depth_path = os.path.join(input_path, os.pardir, 'depth')
+
+
+        if os.path.exists(depth_path):
             pass
         else:
-            os.mkdir(f"{output_path}{os.path.sep}depth_maps")
+            os.mkdir(depth_path)
 
         for camera in chunk.cameras:
             if camera.transform:
@@ -68,7 +71,7 @@ def export_depth_maps(input_path, output_path, parameters):
                 depth = depth.convert(" ", "F16")
                 compr = Metashape.ImageCompression()
                 compr.tiff_compression = Metashape.ImageCompression().TiffCompressionDeflate
-                depth.save(f"{output_path}{os.path.sep}depth_maps{os.path.sep}{camera.label}.tif")
+                depth.save(f"{depth_path}{os.path.sep}{camera.label}.tif")
                 print(f"Depth map for {camera.label} exported successfully!")
 
         doc.save()
@@ -83,9 +86,8 @@ if __name__ == "__main__":
     print("Please select input folder containing images.")
     input_path = filedialog.askdirectory()
     root.title('Select input folder')
-    output_path = f"{input_path}{os.path.sep}output"
-
-    parameters = load_parameters(input_path)
+    output_path = os.path.join(input_path, os.pardir, 'photogrammetry')
+    parameters = load_parameters(os.path.join(input_path, os.pardir, 'parameters'))
 
     # Checks whether set of images has already been processed
     if os.path.exists(f"{output_path}{os.path.sep}project.psx"):
@@ -96,7 +98,7 @@ if __name__ == "__main__":
             print("Please select a different set of images.")
 
         elif msg_box == 1:
-            export_depth_maps(input_path, output_path, parameters)
+            export_depth_maps(input_path, parameters)
 
     elif not os.path.exists(f"{output_path}{os.path.sep}project.psx"):
-        export_depth_maps(input_path, output_path, parameters)
+        export_depth_maps(input_path, parameters)

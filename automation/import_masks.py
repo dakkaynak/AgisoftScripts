@@ -12,19 +12,19 @@ def import_masks(input_path, output_path):
     """
 
     doc = Metashape.Document()
-    doc.open(f"{output_path}{os.path.sep}project.psx")
+    doc.open(os.path.join(input_path, os.pardir, 'photogrammetry'))
     chunk = doc.chunk
 
     doc.read_only = False
     doc.save()
     doc.read_only = False
 
-    if os.path.exists(f"{input_path}{os.path.sep}masks"):
+    if os.path.exists(os.path.join(input_path, os.pardir, 'masks')):
         pass
     else:
-            os.mkdir(f"{input_path}{os.path.sep}masks")
+            os.mkdir(os.path.join(input_path, os.pardir, 'masks'))
 
-    chunk.generateMasks(path=f"{input_path}{os.path.sep}masks{os.path.sep}"+"{filename}.jpg",
+    chunk.generateMasks(path=f"{input_path}{os.pardir}masks{os.path.sep}"+"{filename}.jpg",
                         masking_mode=Metashape.MaskingMode.MaskingModeFile,
                         cameras=[c.key for c in chunk.cameras if c.type == Metashape.Camera.Type.Regular])
 
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     print("Please select input folder containing images.")
     input_path = filedialog.askdirectory()
     root.title('Select input folder')
-    output_path = f"{input_path}{os.path.sep}output"
+    output_path = os.path.join(input_path, os.pardir, 'photogrammetry')
 
     # Checks whether set of images has already been processed
     if os.path.exists(f"{output_path}{os.path.sep}project.psx"):

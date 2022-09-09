@@ -13,7 +13,7 @@ def generate_white_masks(input_path):
     Checks whether there is a mask for every image and generates white masks to avoid error messages in Agisoft.
     :param output_path: Specifies the path of the project.psx file
     """
-    masks_path = f"{input_path}{os.path.sep}masks{os.path.sep}"
+    masks_path = os.path.join(input_path, os.pardir, 'masks')
     dataset_path = f"{input_path}{os.path.sep}"
 
     dataset_images = filenames_in_folder(input_path)
@@ -61,7 +61,8 @@ if __name__ == "__main__":
     print("Please select input folder containing images.")
     input_path = filedialog.askdirectory()
     root.title('Select input folder')
-    output_path = f"{input_path}{os.path.sep}output"
+    output_path_masks = os.path.join(input_path, os.pardir, 'masks')
+    output_path = os.path.join(input_path, os.pardir, 'photogrammetry')
 
     # Checks whether set of images has already been processed
     if os.path.exists(f"{output_path}{os.path.sep}project.psx"):

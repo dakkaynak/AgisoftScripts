@@ -16,7 +16,7 @@ def find_files(folder, types):
     return [entry.path for entry in os.scandir(folder) if (entry.is_file() and os.path.splitext(entry.name)[1].lower() in types)]
 
 
-def align_cameras(input_path, output_path, parameters):
+def align_cameras(input_path, parameters):
     """
     Creates a new Chunk in a new Metashape document and aligns imported cameras.
     :param input_path: Folder from which images will be imported
@@ -30,7 +30,7 @@ def align_cameras(input_path, output_path, parameters):
     doc = Metashape.Document()
 
     doc.read_only = False
-    doc.save(f"{output_path}{os.path.sep}project.psx")
+    doc.save(os.path.join(input_path, os.pardir, 'photogrammetry', 'project.psx'))
     doc.read_only = False
 
     chunk = doc.addChunk()
@@ -71,8 +71,8 @@ if __name__ == "__main__":
     print("Please select input folder containing images.")
     input_path = filedialog.askdirectory()
     root.title('Select input folder')
-    output_path = f"{input_path}{os.path.sep}output"
-    parameters = load_parameters(input_path)
+    output_path = os.path.join(input_path, os.pardir, 'photogrammetry')
+    parameters = load_parameters(os.path.join(input_path, os.pardir, 'parameters'))
 
     # Checks whether set of images has already been processed
     if os.path.exists(f"{output_path}{os.path.sep}project.psx"):

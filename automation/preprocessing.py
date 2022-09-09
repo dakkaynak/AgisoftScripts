@@ -1,28 +1,15 @@
 import os
-import Metashape
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
 from load_parameters import load_parameters
 
-
-def export_report(input_path, output_path, parameters):
-    """
-    Exports a report of the processed dataset.
-    :param output_path: Specifies the path of the project.psx file
-    """
-
-    if parameters.iloc[0]["export_report"]:
-        doc = Metashape.Document()
-        doc.open(os.path.join(input_path, os.pardir, 'photogrammetry', 'project.psx'))
-        chunk = doc.chunk
-
-        doc.read_only = False
-        doc.save()
-        doc.read_only = False
-
-        chunk.exportReport(f"{output_path}{os.path.sep}report.pdf")
-        doc.save()
+def preprocessing(input_path):
+    repository_path = f"'D:\Piet\Repsitories\derya-piet-test'"
+    input_path_add_quot = f"'{input_path}'"
+    os.system(f"cd C:\ProgramData\Microsoft\Windows\Start Menu\Programs\MATLAB R2021b")
+    os.system(f'matlab.exe -nosplash -nodesktop -r "cd({repository_path}), preprocessing({input_path_add_quot}), exit"')
+#               matlab.exe -nosplash -nodesktop -r "cd('D:\Piet\Repsitories\derya-piet-test'), preprocessing('D:\testsetDNG_SDK\raw'), exit"
 
 
 if __name__ == "__main__":
@@ -35,9 +22,15 @@ if __name__ == "__main__":
     input_path = filedialog.askdirectory()
     root.title('Select input folder')
     output_path = os.path.join(input_path, os.pardir, 'photogrammetry')
-    parameters = load_parameters(os.path.join(input_path, os.pardir, 'parameters'))
+    # parameters = load_parameters(os.path.join(input_path, os.pardir, 'parameters'))
 
     # Checks whether set of images has already been processed
+    if not os.path.exists(f"{output_path}"):
+        os.mkdir(f"{output_path}")
+
+    else:
+        pass
+
     if os.path.exists(f"{output_path}{os.path.sep}project.psx"):
         msg_box = tk.messagebox.askokcancel(title="Warning",
                                             message="The dataset you specified has already been processed."
@@ -46,7 +39,7 @@ if __name__ == "__main__":
             print("Please select a different set of images.")
 
         elif msg_box == 1:
-            export_report(input_path, output_path, parameters)
+            preprocessing(input_path)
 
     elif not os.path.exists(f"{output_path}{os.path.sep}project.psx"):
-        export_report(input_path, output_path, parameters)
+        preprocessing(input_path)

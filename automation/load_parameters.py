@@ -10,7 +10,7 @@ warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
 
 def load_parameters(input_path):
 
-    parameters_excel = pandas.read_excel(f"{input_path}{os.path.sep}parameters{os.path.sep}parameters.xlsx",
+    parameters_excel = pandas.read_excel(f"{input_path}{os.path.sep}parameters.xlsx",
                                          sheet_name='parameters',
                                          true_values=["true"],
                                          false_values=["false"])
@@ -40,7 +40,7 @@ if __name__ == "__main__":
             print("Please select a different set of images.")
 
         elif msg_box == 1:
-            load_parameters(input_path)
+            load_parameters(os.path.join(input_path, os.pardir, 'parameters'))
 
     elif not os.path.exists(f"{output_path}{os.path.sep}project.psx"):
-        load_parameters(input_path)
+        load_parameters(os.path.join(input_path, os.pardir, 'parameters'))

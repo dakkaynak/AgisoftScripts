@@ -6,7 +6,7 @@ from tkinter import messagebox
 from load_parameters import load_parameters
 
 
-def export_dense_cloud(input_path, output_path, parameters):
+def export_dense_cloud(input_path, parameters):
     """
     Exports dense cloud from the Metashape project specified in the output path.
     :param output_path: Specifies the path of the project.psx file
@@ -15,14 +15,14 @@ def export_dense_cloud(input_path, output_path, parameters):
     if parameters.iloc[0]["export_dense_cloud_to_file"]:
 
         doc = Metashape.Document()
-        doc.open(f"{output_path}{os.path.sep}project.psx")
+        doc.open(os.path.join(input_path, os.pardir, 'photogrammetry', 'project.psx'))
         chunk = doc.chunk
 
         doc.read_only = False
         doc.save()
         doc.read_only = False
 
-        chunk.exportPoints(path=f"{output_path}{os.path.sep}dense_cloud.las",
+        chunk.exportPoints(path=f"{input_path}{os.path.sep}{os.pardir}{os.path.sep}photogrammetry{os.path.sep}dense_cloud.las",
                            source_data=getattr(Metashape, parameters.iloc[0]["export_dense_cloud/source_data"]),
                            binary=parameters.iloc[0]["export_dense_cloud/binary"],
                            save_normals=parameters.iloc[0]["export_dense_cloud/save_normals"],
@@ -55,11 +55,16 @@ if __name__ == "__main__":
     print("Please select input folder containing images.")
     input_path = filedialog.askdirectory()
     root.title('Select input folder')
-    output_path = f"{input_path}{os.path.sep}output"
-
-    parameters = load_parameters(input_path)
+    output_path = os.path.join(input_path, os.pardir, 'photogrammetry')
+    parameters = load_parameters(os.path.join(input_path, os.pardir, 'parameters'))
 
     # Checks whether set of images has already been processed
+    if not os.path.exists(f"{output_path}"):
+        os.mkdir(f"{output_path}")
+
+    else:
+        pass
+
     if os.path.exists(f"{output_path}{os.path.sep}project.psx"):
         msg_box = tk.messagebox.askokcancel(title="Warning",
                                             message="The dataset you specified has already been processed."
@@ -68,7 +73,7 @@ if __name__ == "__main__":
             print("Please select a different set of images.")
 
         elif msg_box == 1:
-            export_dense_cloud(input_path, output_path, parameters)
+            export_dense_cloud(input_path, parameters)
 
     elif not os.path.exists(f"{output_path}{os.path.sep}project.psx"):
-        export_dense_cloud(input_path, output_path, parameters)
+        export_dense_cloud(input_path, parameters)

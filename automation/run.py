@@ -23,16 +23,16 @@ def find_files(folder, types):
 
 
 def processing(input_path, output_path):
-    parameters = load_parameters(input_path)
+    parameters = load_parameters(os.path.join(input_path, os.pardir, 'parameters'))
 
     generate_white_masks(input_path)
-    import_masks(input_path, output_path)
-    align_cameras(input_path, output_path, parameters)
+    # import_masks(input_path, output_path)
+    align_cameras(input_path, parameters)
     build_dense_cloud(input_path, output_path, parameters)
     export_dense_cloud(input_path, output_path, parameters)
     build_model(input_path, output_path, parameters)
     export_model(input_path, output_path, parameters)
-    export_depth_maps(input_path, output_path, parameters)
+    export_depth_maps(input_path, parameters)
     export_normal_maps(input_path, output_path, parameters)
     export_report(input_path, output_path, parameters)
 
@@ -40,9 +40,15 @@ def processing(input_path, output_path):
 print("Please select input folder containing images.")
 input_path = filedialog.askdirectory()
 root.title('Select input folder')
-output_path = f"{input_path}{os.path.sep}output"
+output_path = os.path.join(input_path, os.pardir, 'photogrammetry')
 
 # Checks whether set of images has already been processed
+if not os.path.exists(f"{output_path}"):
+    os.mkdir(f"{output_path}")
+
+else:
+    pass
+
 if os.path.exists(f"{output_path}{os.path.sep}project.psx"):
     msg_box = tk.messagebox.askokcancel(title="Warning", message="The dataset you specified has already been processed."
                                                                  " If you proceed, previous files will be deleted.")
